@@ -30,4 +30,12 @@ public class ConnectionPoolTest {
         assertDoesNotThrow(() -> new ConnectionPool(1));
         assertDoesNotThrow(() -> new ConnectionPool(65535));
     }
+
+    @Test
+    void testReleaseConnectionIdOutOfRange() {
+        ConnectionPool pool = new ConnectionPool(10);
+        assertThrows(IllegalArgumentException.class, () -> pool.release(11));
+        assertThrows(IllegalArgumentException.class, () -> pool.release(0));
+        assertThrows(IllegalArgumentException.class, () -> pool.release(100000));
+    }
 }
