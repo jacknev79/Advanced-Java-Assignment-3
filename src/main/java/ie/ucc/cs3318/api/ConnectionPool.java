@@ -12,7 +12,7 @@ public interface ConnectionPool {
 
     abstract int getTotal();
 
-    abstract void release();
+    abstract void release(int id);
 
     abstract Connection request();
 

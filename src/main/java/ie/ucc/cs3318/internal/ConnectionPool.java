@@ -2,7 +2,7 @@ package ie.ucc.cs3318.internal;
 
 import java.util.ArrayList;
 
-public class ConnectionPool {
+public class ConnectionPool implements ie.ucc.cs3318.api.ConnectionPool {
     private int connectionCounter;
     private Connection[] busy;
     private ArrayList<Connection> available;
@@ -18,6 +18,7 @@ public class ConnectionPool {
         this.available = new ArrayList<>();
     }
 
+    @Override
     public void release(int id) {
         if (id < 0 || id >= capacity) {
             throw new IllegalArgumentException("id must positive and less than " + capacity);
@@ -31,6 +32,7 @@ public class ConnectionPool {
         this.busy[id] = null;
     }
 
+    @Override
     public Connection request() {
         if (this.connectionCounter >= capacity && this.available.isEmpty()) {
             throw new IllegalStateException("No connections available");
@@ -57,6 +59,7 @@ public class ConnectionPool {
         return c;
     }
 
+    @Override
     public int[] getStatus() {
         // should return an array of capacity, connections in use, connections available
         int[] status = new int[3];
@@ -67,4 +70,23 @@ public class ConnectionPool {
         return status;
     }
 
+    @Override
+    public int getCapacity() {
+        return capacity;
+    }
+
+    @Override
+    public int getInUse() {
+        return this.connectionCounter - this.available.size();
+    }
+
+    @Override
+    public int getTotal() {
+        return this.connectionCounter;
+    }
+
+    @Override
+    public int getAvailable() {
+        return this.available.size();
+    }
 }
