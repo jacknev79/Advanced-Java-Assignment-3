@@ -34,9 +34,12 @@ public class ConnectionPoolTest {
     @Test
     void testReleaseConnectionIdOutOfRange() {
         ConnectionPool pool = new ConnectionPool(10);
-        IllegalArgumentException e = assertThrows(IllegalArgumentException.class, () -> pool.release(11));
-        IllegalArgumentException e1 = assertThrows(IllegalArgumentException.class, () -> pool.release(-1));
-        IllegalArgumentException e2 = assertThrows(IllegalArgumentException.class, () -> pool.release(100000));
+        Connection c1 = new Connection(11);
+        Connection c2 = new Connection(-1);
+        Connection c3 = new Connection(100000);
+        IllegalArgumentException e = assertThrows(IllegalArgumentException.class, () -> pool.release(c1));
+        IllegalArgumentException e1 = assertThrows(IllegalArgumentException.class, () -> pool.release(c2));
+        IllegalArgumentException e2 = assertThrows(IllegalArgumentException.class, () -> pool.release(c3));
 
         assertTrue(e.getMessage().contains("positive and less than 10"));
         assertTrue(e1.getMessage().contains("positive and less than 10"));
@@ -46,9 +49,9 @@ public class ConnectionPoolTest {
     @Test
     void testReleaseNullConnection() {
         ConnectionPool pool = new ConnectionPool(10);
-        IllegalArgumentException e = assertThrows(IllegalArgumentException.class, () -> pool.release(4));
+        IllegalArgumentException e = assertThrows(IllegalArgumentException.class, () -> pool.release(null));
 
-        assertTrue(e.getMessage().contains("4 not found"));
+        assertTrue(e.getMessage().contains("c cannot be null"));
     }
 
     @Test
@@ -74,7 +77,7 @@ public class ConnectionPoolTest {
     void testRequestReleaseRequest() {
         ConnectionPool pool = new ConnectionPool(1);
         Connection c = pool.request();
-        pool.release(c.getId());
+        pool.release(c);
         assertDoesNotThrow(() -> pool.request());
     }
 
@@ -84,7 +87,7 @@ public class ConnectionPoolTest {
         Connection c = pool.request();
         Connection c1 = pool.request();
         Connection c2 = pool.request();
-        pool.release(c.getId());
+        pool.release(c);
 
         int[] status = pool.getStatus();
 
@@ -101,8 +104,8 @@ public class ConnectionPoolTest {
         Connection c1 = pool.request();
         Connection c2 = pool.request();
         Connection c3 = pool.request();
-        pool.release(c.getId());
-        pool.release(c3.getId());
+        pool.release(c);
+        pool.release(c3);
         Connection c4 = pool.request();
 
         int[] status = pool.getStatus();
