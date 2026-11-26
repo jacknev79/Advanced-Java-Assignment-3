@@ -78,4 +78,19 @@ public class ConnectionPoolTest {
         assertDoesNotThrow(() -> pool.request());
     }
 
+    @Test
+    void testPoolStatusCorrectlyReturned() {
+        ConnectionPool pool = new ConnectionPool(3);
+        Connection c = pool.request();
+        Connection c1 = pool.request();
+        Connection c2 = pool.request();
+        pool.release(c.getId());
+
+        int[] status = pool.getStatus();
+
+        assertEquals(3, status[0]);
+        assertEquals(2, status[1]);
+        assertEquals(1, status[2]);
+
+    }
 }
