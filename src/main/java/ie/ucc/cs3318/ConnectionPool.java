@@ -45,6 +45,14 @@ public class ConnectionPool {
             c = this.available.removeLast();
         }
 
+        c.setAvailable(false);
+        if (busy[c.getId()] != null) {
+            // NB cannot test without being able to access
+            // private busy field in ConnectionPoolTest.java,
+            // therefore will not test this exception
+            throw new IllegalStateException("Multiple connections sharing the same id, " +
+                    "should not be allowed.");
+        }
         busy[c.getId()] = c;
         return c;
     }
