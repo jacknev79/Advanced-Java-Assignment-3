@@ -50,4 +50,31 @@ public class ConnectionPoolTest {
 
         assertTrue(e.getMessage().contains("4 not found"));
     }
+
+    @Test
+    void testRequestWithinRange() {
+        ConnectionPool pool = new ConnectionPool(10);
+        assertDoesNotThrow(() -> pool.request(1));
+        assertDoesNotThrow(() -> pool.request(10));
+
+    }
+
+    @Test
+    void testRequestAboveCapacity() {
+        ConnectionPool pool = new ConnectionPool(10);
+
+        IllegalArgumentException e = assertThrows(IllegalArgumentException.class,
+                () -> pool.request(11));
+
+        assertTrue(e.getMessage().contains(""));
+    }
+
+    @Test
+    void testRequestBelowCapacity() {
+        ConnectionPool pool = new ConnectionPool(10);
+
+        IllegalArgumentException e = assertThrows(IllegalArgumentException.class, () -> pool.release(-1));
+
+        assertTrue(e.getMessage().contains(""));
+    }
 }
