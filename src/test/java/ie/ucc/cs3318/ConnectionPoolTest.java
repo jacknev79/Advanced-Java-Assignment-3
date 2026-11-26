@@ -34,8 +34,20 @@ public class ConnectionPoolTest {
     @Test
     void testReleaseConnectionIdOutOfRange() {
         ConnectionPool pool = new ConnectionPool(10);
-        assertThrows(IllegalArgumentException.class, () -> pool.release(11));
-        assertThrows(IllegalArgumentException.class, () -> pool.release(0));
-        assertThrows(IllegalArgumentException.class, () -> pool.release(100000));
+        IllegalArgumentException e = assertThrows(IllegalArgumentException.class, () -> pool.release(11));
+        IllegalArgumentException e1 = assertThrows(IllegalArgumentException.class, () -> pool.release(-1));
+        IllegalArgumentException e2 = assertThrows(IllegalArgumentException.class, () -> pool.release(100000));
+
+        assertTrue(e.getMessage().contains("positive and less than 10"));
+        assertTrue(e1.getMessage().contains("positive and less than 10"));
+        assertTrue(e2.getMessage().contains("positive and less than 10"));
+    }
+
+    @Test
+    void testReleaseNullConnection() {
+        ConnectionPool pool = new ConnectionPool(10);
+        IllegalArgumentException e = assertThrows(IllegalArgumentException.class, () -> pool.release(4));
+
+        assertTrue(e.getMessage().contains("4 not found"));
     }
 }
