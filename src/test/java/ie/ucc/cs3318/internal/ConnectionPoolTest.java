@@ -86,7 +86,10 @@ public class ConnectionPoolTest {
         ConnectionPool pool = new ConnectionPool(1);
         Connection c = pool.request();
         pool.release(c);
-        assertDoesNotThrow(() -> pool.request());
+
+        Connection c2 = assertDoesNotThrow(() -> pool.request());
+
+        assertEquals(c.getId(), c2.getId());
     }
 
     @Test
