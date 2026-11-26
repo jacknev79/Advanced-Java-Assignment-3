@@ -52,29 +52,23 @@ public class ConnectionPoolTest {
     }
 
     @Test
-    void testRequestWithinRange() {
+    void testRequestWithinCapacity() {
         ConnectionPool pool = new ConnectionPool(10);
-        assertDoesNotThrow(() -> pool.request(1));
-        assertDoesNotThrow(() -> pool.request(10));
+        assertDoesNotThrow(() -> pool.request());
+        assertDoesNotThrow(() -> pool.request());
 
     }
 
     @Test
     void testRequestAboveCapacity() {
-        ConnectionPool pool = new ConnectionPool(10);
+        ConnectionPool pool = new ConnectionPool(2);
+        int id = pool.request();
+        int id1 = pool.request();
 
-        IllegalArgumentException e = assertThrows(IllegalArgumentException.class,
-                () -> pool.request(11));
-
-        assertTrue(e.getMessage().contains(""));
-    }
-
-    @Test
-    void testRequestBelowCapacity() {
-        ConnectionPool pool = new ConnectionPool(10);
-
-        IllegalArgumentException e = assertThrows(IllegalArgumentException.class, () -> pool.release(-1));
+        IllegalStateException e = assertThrows(IllegalStateException.class,
+                () -> pool.request());
 
         assertTrue(e.getMessage().contains(""));
     }
+
 }
