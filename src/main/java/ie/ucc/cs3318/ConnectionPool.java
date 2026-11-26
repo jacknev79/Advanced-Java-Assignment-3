@@ -1,9 +1,11 @@
 package ie.ucc.cs3318;
 
+import java.util.ArrayList;
+
 public class ConnectionPool {
     private int connectionCounter;
     private Connection[] busy;
-    private Connection[] available;
+    private ArrayList<Connection> available;
     private int capacity;
 
     public ConnectionPool(int capacity) {
@@ -13,7 +15,7 @@ public class ConnectionPool {
 
         this.capacity = capacity;
         this.busy = new Connection[capacity];
-        this.available = new Connection[capacity];
+        this.available = new ArrayList<>();
     }
 
     public void release(int id) {
@@ -25,8 +27,15 @@ public class ConnectionPool {
             throw new IllegalArgumentException("Connection with id " + id + " not found");
         }
         c.setAvailable(true);
-        this.available[id] = c;
+        this.available.add(c);
         this.busy[id] = null;
+    }
+
+    public int request() {
+        if (this.connectionCounter >= capacity) {
+            throw new IllegalStateException("ConnectionPool is full");
+        }
+        return 1;
     }
 
 }
