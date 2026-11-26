@@ -28,8 +28,8 @@ public class ConnectionPool implements ie.ucc.cs3318.api.ConnectionPool {
         if (id < 0 || id >= capacity) {
             throw new IllegalArgumentException("id must positive and less than " + capacity);
         }
-        if (c == null) {
-            throw new IllegalArgumentException("Connection with id " + id + " not found");
+        if (busy[id] == null) {
+            throw new IllegalStateException("Connection with id " + id + " not found");
         }
         c.setAvailable(true);
         this.available.add(c);

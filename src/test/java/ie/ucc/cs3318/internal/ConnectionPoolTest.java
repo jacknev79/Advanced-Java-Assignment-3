@@ -55,6 +55,14 @@ public class ConnectionPoolTest {
     }
 
     @Test
+    void testReleaseConnectionTwice() {
+        ConnectionPool pool = new ConnectionPool(10);
+        Connection c = pool.request();
+        pool.release(c);
+        assertThrows(IllegalStateException.class, () -> pool.release(c));
+    }
+
+    @Test
     void testRequestWithinCapacity() {
         ConnectionPool pool = new ConnectionPool(10);
         assertDoesNotThrow(() -> pool.request());
