@@ -56,19 +56,18 @@ public class ConnectionPoolTest {
         ConnectionPool pool = new ConnectionPool(10);
         assertDoesNotThrow(() -> pool.request());
         assertDoesNotThrow(() -> pool.request());
-
     }
 
     @Test
     void testRequestAboveCapacity() {
         ConnectionPool pool = new ConnectionPool(2);
-        int id = pool.request();
-        int id1 = pool.request();
+        Connection c = pool.request();
+        Connection c1 = pool.request();
 
         IllegalStateException e = assertThrows(IllegalStateException.class,
                 () -> pool.request());
 
-        assertTrue(e.getMessage().contains(""));
+        assertTrue(e.getMessage().contains("No connections available"));
     }
 
 }

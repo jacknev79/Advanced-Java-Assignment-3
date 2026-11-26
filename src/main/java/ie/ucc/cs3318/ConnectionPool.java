@@ -12,7 +12,7 @@ public class ConnectionPool {
         if (capacity < 1 || capacity > 65535) {
             throw new IllegalArgumentException("capacity must be between 1 and 65,535");
         }
-
+        this.connectionCounter = 0;
         this.capacity = capacity;
         this.busy = new Connection[capacity];
         this.available = new ArrayList<>();
@@ -31,11 +31,22 @@ public class ConnectionPool {
         this.busy[id] = null;
     }
 
-    public int request() {
-        if (this.connectionCounter >= capacity) {
-            throw new IllegalStateException("ConnectionPool is full");
+    public Connection request() {
+        if (this.connectionCounter >= capacity && this.available.isEmpty()) {
+            throw new IllegalStateException("No connections available");
         }
-        return 1;
+
+        Connection c;
+        if (this.available.isEmpty()) {
+            c = new Connection(this.connectionCounter);
+            this.connectionCounter++;
+        }
+        else {
+            c = this.available.removeLast();
+        }
+
+        busy[c.getId()] = c;
+        return c;
     }
 
 }
