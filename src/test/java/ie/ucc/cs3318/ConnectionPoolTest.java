@@ -79,7 +79,7 @@ public class ConnectionPoolTest {
     }
 
     @Test
-    void testPoolStatusCorrectlyReturned() {
+    void testPoolStatusCorrectlyReturned1() {
         ConnectionPool pool = new ConnectionPool(3);
         Connection c = pool.request();
         Connection c1 = pool.request();
@@ -93,4 +93,24 @@ public class ConnectionPoolTest {
         assertEquals(1, status[2]);
 
     }
+
+    @Test
+    void testPoolStatusCorrectlyReturned2() {
+        ConnectionPool pool = new ConnectionPool(5);
+        Connection c = pool.request();
+        Connection c1 = pool.request();
+        Connection c2 = pool.request();
+        Connection c3 = pool.request();
+        pool.release(c.getId());
+        pool.release(c3.getId());
+        Connection c4 = pool.request();
+
+        int[] status = pool.getStatus();
+
+        assertEquals(5, status[0]);
+        assertEquals(3, status[1]);
+        assertEquals(1, status[2]);
+
+    }
+
 }

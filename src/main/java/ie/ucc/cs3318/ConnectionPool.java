@@ -57,4 +57,14 @@ public class ConnectionPool {
         return c;
     }
 
+    public int[] getStatus() {
+        // should return an array of capacity, connections in use, connections available
+        int[] status = new int[3];
+        status[0] = this.capacity;
+        status[1] = this.connectionCounter - this.available.size();
+        status[2] = this.available.size();
+
+        return status;
+    }
+
 }
