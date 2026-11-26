@@ -70,4 +70,12 @@ public class ConnectionPoolTest {
         assertTrue(e.getMessage().contains("No connections available"));
     }
 
+    @Test
+    void testRequestReleaseRequest() {
+        ConnectionPool pool = new ConnectionPool(1);
+        Connection c = pool.request();
+        pool.release(c.getId());
+        assertDoesNotThrow(() -> pool.request());
+    }
+
 }
