@@ -1,4 +1,4 @@
-package ie.ucc.cs3318;
+package ie.ucc.cs3318.internal;
 
 public class Connection {
     private boolean available;

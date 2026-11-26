@@ -1,4 +1,4 @@
-package ie.ucc.cs3318;
+package ie.ucc.cs3318.internal;
 
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
