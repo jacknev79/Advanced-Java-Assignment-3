@@ -7,6 +7,7 @@ public class ConnectionPool implements ie.ucc.cs3318.api.ConnectionPool {
     private Connection[] busy;
     private ArrayList<Connection> available;
     private int capacity;
+    private int total;
 
     public ConnectionPool(int capacity) {
         if (capacity < 1 || capacity > 65535) {
@@ -19,11 +20,14 @@ public class ConnectionPool implements ie.ucc.cs3318.api.ConnectionPool {
     }
 
     @Override
-    public void release(int id) {
+    public void release(Connection c) {
+        if (c == null) {
+            throw new IllegalArgumentException("c cannot be null");
+        }
+        int id = c.getId();
         if (id < 0 || id >= capacity) {
             throw new IllegalArgumentException("id must positive and less than " + capacity);
         }
-        Connection c = busy[id];
         if (c == null) {
             throw new IllegalArgumentException("Connection with id " + id + " not found");
         }
@@ -55,6 +59,7 @@ public class ConnectionPool implements ie.ucc.cs3318.api.ConnectionPool {
             throw new IllegalStateException("Multiple connections sharing the same id, " +
                     "should not be allowed.");
         }
+        total++;
         busy[c.getId()] = c;
         return c;
     }
@@ -82,7 +87,8 @@ public class ConnectionPool implements ie.ucc.cs3318.api.ConnectionPool {
 
     @Override
     public int getTotal() {
-        return this.connectionCounter;
+        // assumes want the num avai
+        return this.total;
     }
 
     @Override
