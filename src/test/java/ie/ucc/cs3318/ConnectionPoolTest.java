@@ -12,22 +12,22 @@ public class ConnectionPoolTest {
                 () -> new ConnectionPool(0)
         );
 
-        assertTrue(ex.getMessage().contains("between 1 and 65,536"));
+        assertTrue(ex.getMessage().contains("between 1 and 65,535"));
     }
 
     @Test
     void throwsExceptionWhenCapacityTooLarge() {
         IllegalArgumentException ex = assertThrows(
                 IllegalArgumentException.class,
-                () -> new ConnectionPool(65_536)
+                () -> new ConnectionPool(65536)
         );
 
-        assertTrue(ex.getMessage().contains("between 1 and 65,536"));
+        assertTrue(ex.getMessage().contains("between 1 and 65,535"));
     }
 
     @Test
     void testCapacityWithinRange() {
         assertDoesNotThrow(() -> new ConnectionPool(1));
-        assertDoesNotThrow(() -> new ConnectionPool(65_535));
+        assertDoesNotThrow(() -> new ConnectionPool(65535));
     }
 }
